@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ContactForm from './ContactForm/ContactForm';
 import { nanoid } from 'nanoid';
+import ContactsList from './ContactsList/ContactsList';
 
 class App extends Component {
   state = {
@@ -28,19 +29,21 @@ class App extends Component {
     }));
   };
 
+  deleteContact = id => {
+    this.setState(prevState => ({
+      contacts: prevState.contacts.filter(contact => contact.id !== id),
+    }));
+  };
+
   render() {
-    const { contacts, name } = this.state;
+    const { name, contacts } = this.state;
     return (
       <>
-        <ContactForm
-          name={name}
-          onFormSubmit={this.handleFormSubmit}
-        />
-        <ul>
-          {contacts.map(contact => (
-            <li key={contact.id}>{contact.name}</li>
-          ))}
-        </ul>
+        <h1>Phonebook</h1>
+        <ContactForm name={name} onFormSubmit={this.handleFormSubmit} />
+
+        <h2>Contacts</h2>
+        <ContactsList contacts={contacts} onDelete={this.deleteContact} />
       </>
     );
   }

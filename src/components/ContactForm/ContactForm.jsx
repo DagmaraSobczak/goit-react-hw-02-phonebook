@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 //import css from './ContactForm/ContactForm.module.css';
 
-//import { nanoid } from 'nanoid';
+
 
 export default class ContactForm extends Component {
   render() {
