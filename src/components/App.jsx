@@ -2,31 +2,36 @@ import React, { Component } from 'react';
 import ContactForm from './ContactForm/ContactForm';
 import { nanoid } from 'nanoid';
 import ContactsList from './ContactsList/ContactsList';
+import Filter from './Filter/Filter';
+import Contacts from './Contacts/Contacts.json';
 
 class App extends Component {
   state = {
-    contacts: [],
-    name: '',
+    contacts: Contacts,
+    filter: '',
   };
 
-  handleNameChange = event => {
-    this.setState({ name: event.target.value });
-  };
-
-  handleFormSubmit = event => {
-    event.preventDefault();
-    const { name } = this.state;
-    if (name.trim() === '') {
-      return;
-    }
-    const contact = {
+  handleFormSubmit = name => {
+    const { contacts } = this.state;
+    const newContact = {
       id: nanoid(),
       name: name,
     };
-    this.setState(prevState => ({
-      contacts: [...prevState.contacts, contact],
-      name: '',
-    }));
+    this.setState({
+      contacts: [...contacts, newContact],
+    });
+    let existContact = this.state.contacts.find(
+      contact => name.toLowerCase() === contact.name.toLowerCase()
+    );
+
+    if (existContact) {
+      alert(`${name} is already in contacts.`);
+      return;
+    }
+  };
+
+  handleFilterChange = event => {
+    this.setState({ filter: event.target.value });
   };
 
   deleteContact = id => {
@@ -36,14 +41,21 @@ class App extends Component {
   };
 
   render() {
-    const { name, contacts } = this.state;
+    const { name, contacts, filter } = this.state;
+
+    const filteredContacts = contacts.filter(contact =>
+      contact.name.toLowerCase().includes(filter.toLowerCase())
+    );
     return (
       <>
         <h1>Phonebook</h1>
         <ContactForm name={name} onFormSubmit={this.handleFormSubmit} />
-
+        <Filter filteredContacts={this.handleFilterChange} />
         <h2>Contacts</h2>
-        <ContactsList contacts={contacts} onDelete={this.deleteContact} />
+        <ContactsList
+          contacts={filteredContacts}
+          onDelete={this.deleteContact}
+        />
       </>
     );
   }
