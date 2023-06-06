@@ -13,14 +13,8 @@ class App extends Component {
 
   handleFormSubmit = name => {
     const { contacts } = this.state;
-    const newContact = {
-      id: nanoid(),
-      name: name,
-    };
-    this.setState({
-      contacts: [...contacts, newContact],
-    });
-    let existContact = this.state.contacts.find(
+
+    let existContact = contacts.find(
       contact => name.toLowerCase() === contact.name.toLowerCase()
     );
 
@@ -28,6 +22,15 @@ class App extends Component {
       alert(`${name} is already in contacts.`);
       return;
     }
+
+    const newContact = {
+      id: nanoid(),
+      name: name,
+    };
+
+    this.setState(prevState => ({
+      contacts: [...prevState.contacts, newContact],
+    }));
   };
 
   handleFilterChange = event => {
